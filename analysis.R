@@ -77,3 +77,4 @@ out <- jags(data, inits, params, "model.jags",
             n.burnin = nb, working.directory = getwd())
 
 print(out, dig = 2)
+
