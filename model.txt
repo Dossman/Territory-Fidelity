@@ -1,0 +1,23 @@
+
+    model {
+    
+    # Priors
+      psi ~ dunif(0,1)
+      p ~ dunif(0,1)
+    
+    # Likelihood
+     for (i in 1:R) {
+        # True state model for the partially observed true state
+        z[i] ~ dbern(psi)		# True occurrence z at site i
+    
+        for (j in 1:T) {
+          # Observation model for the actual observations
+            y[i,j] ~ dbern(p.eff[i,j])	# Detection-nondetection at i and j
+            p.eff[i,j] <- z[i] * p
+        }
+      }
+    
+    # Derived quantities
+    occ.fs <- sum(z[])	# Number of occupied sites among 60 studied
+    }
+    
