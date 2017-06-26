@@ -1,0 +1,30 @@
+
+    model {
+      #Priors
+
+      alpha.psi ~ dnorm(0, 0.01)
+      beta.psi ~ dnorm(0, 0.01)
+      alpha.p ~ dnorm(0, 0.01)
+      beta1.p ~ dnorm(0, 0.01)
+      beta2.p ~ dnorm(0, 0.01)
+      beta3.p ~ dnorm(0, 0.01)
+      beta4.p ~ dnorm(0, 0.01)
+
+      # Likelihood
+
+      for (i in 1:R){
+        z[i] ~ dbern(psi[i])
+        psi[i] <- 1 / (1 + exp(-lpsi.lim[i]))
+        lpsi.lim[i] <- min(999, max(lpsi[i], -999))
+        lpsi[i] <- alpha.psi + beta.psi * edge[i]
+          for(j in 1:T){
+            y[i,j] ~ dbern(mu.p[i,j])
+            mu.p[i,j] <- z[i] * p[i,j]
+            p[i,j] <- 1 / (1+ exp(-lp.lim[i,j]))
+            lp.lim[i,j] <- min(999, max(-999, lp[i,j]))
+            lp[i,j] <- alpha.p + beta1.p * DATES[i,j] + beta2.p * pow(DATES[i,j],2) + beta3.p * HOURS[i,j] + beta4.p * pow(HOURS[i,j],2)
+      }
+      }
+occ.fs <-sum(z[]) # Numberofoccupiedsites
+mean.p <-exp(alpha.p)/(1+exp(alpha.p)) #Averagedetection
+}
