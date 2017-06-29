@@ -61,11 +61,13 @@ cat("
 sink()
 
 # data 
-data <-list(y=y,R=nrow(y),T=ncol(y))
+data <-list(y=yy,R=nrow(yy),T=ncol(yy))
 
 # Initial values
-zst <-apply(y,1,max) #Observedoccurrenceasstartingvaluesforz
+zst <-apply(y,1,max)
+zst[is.na(zst)] <- 1 #Observedoccurrenceasstartingvaluesforz
 inits <-function()list(z=zst)
+
 # Parametersmonitored
 params <-c("psi","p","occ.fs")
 

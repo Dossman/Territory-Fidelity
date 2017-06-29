@@ -1,0 +1,45 @@
+
+    model {
+    
+    # Specify priors
+    psi1 ~ dunif(0, 1)
+    
+
+    for (k in 1:(nyear-1)){
+    phi[k] ~ dunif(0, 1)
+    gamma[k] ~ dunif(0, 1)
+    }
+    
+    alpha.p ~ dnorm(0,0.1)
+    beta.p ~ dnorm(0,0.1)
+
+    # Ecological submodel: Define state conditional on parameters
+    
+    for (i in 1:nsite){
+      z[i,1] ~ dbern(psi1)
+      for (k in 2:nyear){
+        muZ[i,k]<- z[i,k-1]*phi[k-1] + (1-z[i,k-1])*gamma[k-1]
+        z[i,k] ~ dbern(muZ[i,k])
+      } #k
+    } #i
+    
+    # Observation model
+    for (i in 1:nsite){
+       lp[i] <- alpha.p + beta.p * HABITAT[i]
+       lp.lim[i] <- min(999, max(-999, lp[i]))
+       p[i] <- 1 / (1+ exp(-lp.lim[i]))
+      for (j in 1:nrep){
+        for (k in 1:nyear){
+          muy[i,j,k] <- z[i,k]*p[i]
+          y[i,j,k] ~ dbern(muy[i,j,k])
+        } #k
+      } #j
+    } #i
+    
+    # Derived parameters: Sample and population occupancy and turnover
+    psi[1] <- psi1
+    for (k in 2:nyear){
+    psi[k] <- psi[k-1]*phi[k-1] + (1-psi[k-1])*gamma[k-1]
+    turnover[k-1] <- (1 - psi[k-1]) * gamma[k-1]/psi[k]
+    }
+    }

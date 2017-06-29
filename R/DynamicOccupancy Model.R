@@ -78,6 +78,7 @@ str(data)
 
 
 
+
 ## Bayesian Model
 
 # Specify model in BUGS language
@@ -251,10 +252,14 @@ sink()
 
 # Aggregate detections over reps within a day and bundle data
 yy <- apply(y, c(1, 3), sum, na.rm = TRUE)
+
+yy[yy>1] <- 1
 win.data <- list(y = yy, nsite = dim(yy)[1], nyear = dim(yy)[2])
 
 # Initial values
-inits <- function(){list(z = apply(y, c(1, 3), max))}
+zest <- apply(y, c(1, 3), max)
+zest[is.na(zest)] <- 1
+inits <- function(){list(z = zest)}
 
 # Parameters monitored
 params <- c("psi", "phi", "gamma", "p", "n.occ", "growthr", "turnover")  
