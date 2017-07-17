@@ -35,6 +35,9 @@ for (i in 1:5){
   }
 }
 
+saveRDS(y, "territory_data.rds")
+saveRDS(data, "full_data.rds")
+
 
 ## Determining how many birds were resighted at least once per period
 
@@ -205,7 +208,7 @@ par(mfrow =c(2,1))
 hist(plogis(out$BUGSoutput$sims.list$alpha.p),nclass=40,col="gray",main=
        "Scrub",xlab="Detection Probability",xlim=c(0.1,0.5))
 hist(plogis(out$BUGSoutput$sims.list$alpha.p+out$BUGSoutput$sims.list$beta.p),
-     nclass =40,col="gray",main="Mangrove",xlab="Detection
-     Probability",xlim=c(0.1,0.5))
+     nclass =40,col="gray",main="Mangrove",xlab="Detection Probability",xlim=c(0.1,0.5))
+
 
 
